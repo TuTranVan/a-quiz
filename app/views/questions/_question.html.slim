@@ -11,10 +11,6 @@ tr.question
   td
     button.btn.btn-info[data-toggle="collapse" data-target="#info#{question.id}"]
       em.fa.fa-eye
-    button.btn.btn-warning
-      em.fa.fa-pencil
-    = link_to "#", method: :delete, class: "btn btn-danger", data: { confirm: "Xóa" }
-      em.fa.fa-trash
 tr
   td.answer[colspan="5"]
     ul id="info#{question.id}" class="collapse list-group list-group-flush"
