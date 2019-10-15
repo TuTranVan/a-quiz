@@ -94,7 +94,7 @@ en:
       index:
         question: "Question"
         select: "Select multiple"
-        all: "All"
+        all: "Check all"
         cancel: "Cancel"
         crawler: " Crawler W3School"
         destroy: "Destroy"

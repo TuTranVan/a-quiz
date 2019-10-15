@@ -3,6 +3,7 @@
 module Admin
   class CrawlerQuestionsController < BaseController
     before_action :load_crawler_question, only: %i[update destroy]
+    before_action :check_crawler, only: :create
 
     def index
       @crawler_questions = CrawlerQuestion.newest.includes(:crawler_answers).page(params[:page]).per(10)
@@ -36,6 +37,12 @@ module Admin
       return if @crawler_question
 
       redirect_to admin_dashboard_path
+    end
+
+    def check_crawler
+      if Delayed::Job.find_by(queue: :crawler).present?
+        redirect_to admin_crawler_questions_path, warning: "Crawler is running"
+      end
     end
   end
 end

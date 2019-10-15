@@ -63,7 +63,7 @@ class Question < ApplicationRecord
   end
 
   def show_question
-    QuestionBroadcastJob.perform_now(Notification.where(question_id: self, notification_content: 0))
+    QuestionBroadcastJob.perform_now(Notification.where(question_id: self.id, notification_content: 0))
   end
 
   def update_for_question
