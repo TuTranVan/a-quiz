@@ -50,7 +50,15 @@ class AllExams extends React.Component {
                 <p>Take this .NET test especially designed for .NET developers new to .NET Core 2.0. Topics: Entity Framework Core, ASP.NET Core, .NET Core Command-Line Interface (CLI) Tools, Kestrel, API, etc.</p>
               </div>
               <div className="action text-center">
-                <a href={`/exams/${exam.id}`}><button className="btn btn-click">TAKE THE TEST</button></a>
+                {
+                  (() => {
+                    if (exam.results[1].answer_choice === null) {
+                      return (
+                        <a key={index} href={`/exams/${exam.id}`}><button className="btn btn-click" onClick={this.props.countDown}>TAKE THE TEST</button></a>
+                      )
+                    }
+                  })()
+                }
               </div>
             </div>
         </div>
