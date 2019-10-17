@@ -21,7 +21,6 @@ module Api
             @result.update_attributes(answer_choice: false)
           end
         end
-        head 200
       end
 
       private

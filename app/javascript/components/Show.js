@@ -35,6 +35,12 @@ class Show extends React.Component {
     this.setState({current});
   }
   componentDidMount() {
+    const seconds = parseInt(localStorage.getItem("seconds"))
+    const minutes = parseInt(localStorage.getItem("minutes"))
+    this.setState({
+      seconds: seconds,
+      minutes: minutes,
+    })
     const path = window.location.pathname
     const exam_id = path.substring(path.lastIndexOf('/') + 1)
     fetch(`/api/v1/exams/` + exam_id)
@@ -61,6 +67,8 @@ class Show extends React.Component {
             this.setState((prevState) => ({ seconds: prevState.seconds - 1}));
           }
         }
+        localStorage.setItem("seconds", this.state.seconds)
+        localStorage.setItem("minutes", this.state.minutes)
       }, 1000)
       setTimeout(() => {
         return this.toggleModal()
@@ -90,54 +98,6 @@ class Show extends React.Component {
         console.log(err)
       }.bind(this)
     });
-  }
-  isLoading() {
-    const { exam } = this.state
-    return(
-      <ModalBody>
-          {exam.map((question, index) => (
-            <div key={index}>
-            <hr />
-              <h5>{question.question_content}</h5>
-              {question.answers.map((question_answers, i) =>
-                <div className="row" key={i}>
-                  <div className="col-6">
-                    <div key={i}>
-                      {
-                        (() => {
-                          if (question_answers.status == true) {
-                            return (
-                              <p style={pStyle}>{question_answers.content}</p>
-                            )
-                          } else {
-                            return (
-                              <p>{question_answers.content}</p>
-                            )
-                          }
-                        })()
-                      }
-                    </div>
-                  </div>
-                  <div className="col-6">
-                      <div key={i}>
-                        {
-                          (() => {
-                            if (question_answers.checked == true) {
-                              return (
-                                <p>{String(question_answers.content)}</p>
-                              )
-                            } else if (question_answers.checked == false){
-                            }
-                          })()
-                        }
-                      </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-      </ModalBody>
-    )
   }
   render() {
     const { isLoaded, exam, current, results } = this.state;
@@ -179,12 +139,67 @@ class Show extends React.Component {
               </Button>
             )}
           </div>
-          <Modal isOpen={this.state.modalIsOpen} className="modal-dialog modal-dialog-centered modal-lg">
-            {this.isLoading()}
-            <ModalFooter>
-              <Button type="secondary" onChange={this.countDown()}>OK</Button>
-            </ModalFooter>
-          </Modal>
+          {
+           (() => {
+             if (exam[0].answer_choice === null) {
+               return (
+                 <Modal isOpen={this.state.modalIsOpen} className="modal-dialog modal-dialog-centered modal-lg">
+                  <ModalBody onChange={this.countDown()}>
+                    {exam.map((question, index) => (
+                      <div key={index}>
+                      <hr />
+                        <h5>{question.question_content}</h5>
+                        {question.answers.map((question_answers, i) =>
+                          <div className="row" key={i}>
+                            <div className="col-6">
+                              <div key={i}>
+                                {
+                                  (() => {
+                                    if (question_answers.status == true) {
+                                      return (
+                                        <p style={pStyle}>{question_answers.content}</p>
+                                      )
+                                    } else {
+                                      return (
+                                        <p>{question_answers.content}</p>
+                                      )
+                                    }
+                                  })()
+                                }
+                              </div>
+                            </div>
+                            <div className="col-6">
+                                <div key={i}>
+                                  {
+                                    (() => {
+                                      if (question_answers.checked == true) {
+                                        return (
+                                          <p>{String(question_answers.content)}</p>
+                                        )
+                                      } else if (question_answers.checked == false){
+                                      }
+                                    })()
+                                  }
+                                </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </ModalBody>
+                  </Modal>
+               )
+             } else if(exam[0].answer_choice == true || exam[0].answer_choice == false){
+               return (
+                 <Modal isOpen={true} className="modal-dialog modal-dialog-centered modal-lg">
+                  <ModalBody>
+                    YOU DONE TEST!
+                  </ModalBody>
+                  </Modal>
+               )
+             }
+           })()
+          }
           <div className="timer-container">
             <div className="current-timer">
               {this.state.hours + ":" + this.state.minutes + ":" + this.state.seconds}

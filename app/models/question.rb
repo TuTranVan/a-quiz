@@ -23,7 +23,7 @@ class Question < ApplicationRecord
   def self.getquestion(exam)
     hard = exam.master? ? 10 : 5
     questions = includes(:category).where(level: "hard", category_id: exam.category_id).sample(hard)
-    questions += includes(:category).where(level: "easy", category_id: exam.category_id).sample(20 - hard)
+    questions += includes(:category).where(level: "easy", category_id: exam.category_id).sample(20 - questions.size)
     questions.shuffle
   end
 
